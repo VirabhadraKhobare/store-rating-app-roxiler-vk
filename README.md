@@ -313,7 +313,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author & Credits
 
-**Original Author:** Lohith Pallikonda
+**Original Author:** Virabhadra Khobare
 - GitHub: [@VirabhadraKhobare](https://github.com/VirabhadraKhobare)
 
 ## 🙏 Acknowledgments
