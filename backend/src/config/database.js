@@ -1,91 +1,34 @@
-const { Pool } = require('pg');
-const config = require('./config');
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
-// Create connection pool
-const pool = new Pool({
-  host: config.database.host,
-  port: config.database.port,
-  database: config.database.database,
-  user: config.database.user,
-  password: config.database.password,
-  ssl: config.database.ssl,
-  max: config.database.max,
-  idleTimeoutMillis: config.database.idleTimeoutMillis,
-  connectionTimeoutMillis: config.database.connectionTimeoutMillis,
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-// Event listeners for connection monitoring
-pool.on('connect', (client) => {
-  console.log('🔗 New database connection established');
-});
-
-pool.on('error', (err) => {
-  console.error('❌ Database connection error:', err);
-});
-
-pool.on('remove', (client) => {
-  console.log('🔌 Database connection removed');
-});
-
-// Function to test database connection
-const testConnection = async () => {
+async function testConnection() {
   try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT NOW() as current_time');
-    console.log('✅ Database connection successful');
-    console.log('📅 Current database time:', result.rows[0].current_time);
-    client.release();
+    const connection = await pool.getConnection();
+    await connection.ping();
+    connection.release();
+    console.log('✅ MySQL database connected!');
     return true;
-  } catch (error) {
-    console.error('❌ Database connection failed:', error);
+  } catch (err) {
+    console.error('❌ Database connection failed:', err);
     return false;
   }
-};
+}
 
-// Function to execute queries with error handling
-const query = async (text, params) => {
-  const start = Date.now();
-  try {
-    const result = await pool.query(text, params);
-    const duration = Date.now() - start;
-    
-    if (config.nodeEnv === 'development') {
-      console.log('📊 Query executed:', {
-        duration: `${duration}ms`,
-        rows: result.rowCount,
-        command: text.split(' ')[0]
-      });
-    }
-    
-    return result;
-  } catch (error) {
-    console.error('❌ Database query error:', error);
-    throw error;
-  }
-};
+// MySQL query helper
+async function query(sql, params) {
+  const [rows] = await pool.query(sql, params);
+  return rows;
+}
 
-// Function to get a client from the pool
-const getClient = async () => {
-  try {
-    const client = await pool.connect();
-    return client;
-  } catch (error) {
-    console.error('❌ Error getting database client:', error);
-    throw error;
-  }
-};
-
-// Graceful shutdown
-const shutdown = async () => {
-  console.log('🛑 Shutting down database connections...');
-  await pool.end();
-  console.log('✅ Database connections closed');
-};
-
-module.exports = {
-  pool,
-  query,
-  getClient,
-  testConnection,
-  shutdown
-};
+module.exports = { pool, testConnection, query };

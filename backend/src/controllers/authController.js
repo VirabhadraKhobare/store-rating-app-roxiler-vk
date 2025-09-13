@@ -12,30 +12,28 @@ const register = async (req, res) => {
     
     // Check if user already exists
     const existingUser = await query(
-      'SELECT id FROM users WHERE email = $1',
+      'SELECT id FROM users WHERE email = ?',
       [email]
     );
-    
-    if (existingUser.rows.length > 0) {
+    if (existingUser.length > 0) {
       return sendError(res, 409, 'User with this email already exists');
     }
-    
     // Hash password
     const hashedPassword = await hashPassword(password);
-    
     // Create user
     const result = await query(
-      `INSERT INTO users (name, email, password, address, role) 
-       VALUES ($1, $2, $3, $4, 'normal_user') 
-       RETURNING id, name, email, address, role, created_at`,
+      `INSERT INTO users (name, email, password, address, role) VALUES (?, ?, ?, ?, 'normal_user')`,
       [name, email, hashedPassword, address]
     );
-    
-    const user = result.rows[0];
-    
+    // Get the newly created user
+    const userId = result.insertId;
+    const userRows = await query(
+      'SELECT id, name, email, address, role, created_at FROM users WHERE id = ?',
+      [userId]
+    );
+    const user = userRows[0];
     // Generate JWT token
     const token = generateToken(user);
-    
     // Return user data and token
     sendSuccess(res, 201, 'User registered successfully', {
       user: {
@@ -63,27 +61,21 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     
     // Find user by email
-    const result = await query(
-      'SELECT id, name, email, password, address, role FROM users WHERE email = $1',
+    const userRows = await query(
+      'SELECT id, name, email, password, address, role FROM users WHERE email = ?',
       [email]
     );
-    
-    if (result.rows.length === 0) {
+    if (userRows.length === 0) {
       return sendUnauthorized(res, 'Invalid email or password');
     }
-    
-    const user = result.rows[0];
-    
+    const user = userRows[0];
     // Compare password
     const isPasswordValid = await comparePassword(password, user.password);
-    
     if (!isPasswordValid) {
       return sendUnauthorized(res, 'Invalid email or password');
     }
-    
     // Generate JWT token
     const token = generateToken(user);
-    
     // Return user data and token (exclude password)
     sendSuccess(res, 200, 'Login successful', {
       user: {

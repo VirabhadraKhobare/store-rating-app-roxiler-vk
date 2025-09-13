@@ -12,7 +12,7 @@
     "db:check": "node database/setup.js check",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-   "engines": {
+  "engines": {
     "node": "22.x",
     "npm": "10.x"
   },
@@ -26,10 +26,10 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.11.3"
+    "mysql2": "^3.14.5"
   },
   "devDependencies": {
     "concurrently": "^8.2.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.10"
   }
 }

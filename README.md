@@ -32,12 +32,13 @@ A full-stack web application that allows users to submit ratings for stores regi
 - **Rating Analytics**: Access average rating and total review count
 - **Performance Metrics**: Monitor store rating trends
 
+
 ## 🛠️ Tech Stack
 
 ### Backend
 - **Runtime**: Node.js v22.14.0
 - **Framework**: Express.js
-- **Database**: PostgreSQL
+- **Database**: MySQL (switched from PostgreSQL)
 - **Authentication**: JSON Web Tokens (JWT)
 - **Password Hashing**: bcryptjs
 - **Validation**: express-validator
@@ -47,13 +48,13 @@ A full-stack web application that allows users to submit ratings for stores regi
 - **Framework**: React 18.2.0
 - **Language**: TypeScript
 - **Routing**: React Router DOM v6
-- **HTTP Client**: Axios
+- **HTTP Client**: Axios (direct calls, no service file)
 - **State Management**: React Context API
 - **Styling**: Custom CSS with doodle theme
 
 ### Development Tools
 - **Backend Dev**: Nodemon
-- **Database**: PostgreSQL with connection pooling
+- **Database**: MySQL with connection pooling
 - **API Testing**: Built-in test scripts
 
 ## 📁 Project Structure
@@ -94,15 +95,16 @@ store-rating-app/
 
 ## 🚀 Installation & Setup
 
+
 ### Prerequisites
 - Node.js v22.14.0 or higher
 - npm v10.x or higher
-- PostgreSQL 13+ installed and running
+- MySQL 8+ installed and running
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/Lohithpallikonda/store-rating-app.git
-cd store-rating-app
+git clone https://github.com/VirabhadraKhobare/store-rating-app-roxiler-vk.git
+cd store-rating-app-roxiler-vk
 ```
 
 ### 2. Backend Setup
@@ -116,16 +118,18 @@ npm install
 # Create environment file
 cp .env.example .env
 
+
 # Edit .env with your database credentials
 # DB_HOST=localhost
-# DB_PORT=5432
+# DB_PORT=3306
 # DB_NAME=store_rating_db
-# DB_USER=postgres
-# DB_PASSWORD=your_password
+# DB_USER=your_mysql_user
+# DB_PASSWORD=your_mysql_password
 # JWT_SECRET=your-secret-key
 
+
 # Setup database (creates tables and seeds data)
-npm run db:setup
+# You can use MySQL Workbench or CLI to run the SQL files in backend/database/schema.sql and backend/database/seeds/001_seed_initial_data.sql
 
 # Start development server
 npm run dev
@@ -145,7 +149,9 @@ npm install
 npm start
 ```
 
+
 Frontend will run on `http://localhost:3000`
+
 
 ## 🎯 Usage
 
@@ -299,30 +305,22 @@ npm test  # Run React tests
 - **CORS Configuration**: Controlled cross-origin requests
 - **Role-based Authorization**: Protected API endpoints
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
 
-**Lohith Pallikonda**
-- GitHub: [@Lohithpallikonda](https://github.com/Lohithpallikonda)
+## 👨‍💻 Author & Credits
+
+**Original Author:** Lohith Pallikonda
+- GitHub: [@VirabhadraKhobare](https://github.com/VirabhadraKhobare)
 
 ## 🙏 Acknowledgments
 
 - Express.js team for the robust backend framework
 - React team for the excellent frontend library
-- PostgreSQL community for the reliable database
-- Google Fonts for the Kalam handwritten font
-
+- MySQL community for the reliable database
 ---
 
 *Built with ❤️ for the Roxiler Systems Assignment*
